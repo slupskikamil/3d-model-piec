@@ -42,7 +42,7 @@
         scene.add(ambientLight);
 
         const loader = new GLTFLoader();
-        loader.load('./model.glb', function (gltf) {
+        loader.load('https://static.wixstatic.com/3d/332270_d4d3a7f9a9fb49e89ebdef43b5a26f54.glb', function (gltf) {
             scene.add(gltf.scene);
             document.getElementById('loading').style.display = 'none';
         }, undefined, function (error) {
