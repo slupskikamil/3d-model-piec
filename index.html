@@ -24,7 +24,6 @@
 <body>
     <div id="loading">Loading model...</div>
     <script type="module">
-        // Import Three.js i dodatków jako moduły ES6
         import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.js';
         import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/loaders/GLTFLoader.js';
         import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/controls/OrbitControls.js';
@@ -44,9 +43,9 @@
         const ambientLight = new THREE.AmbientLight(0x404040);
         scene.add(ambientLight);
 
-        // Ładowanie modelu 3D z Wix
+        // Ładowanie modelu 3D z lokalnego pliku na GitHub
         const loader = new GLTFLoader();
-        loader.load('https://static.wixstatic.com/3d/332270_d4d3a7f9a9fb49e89ebdef43b5a26f54.glb', 
+        loader.load('./model.glb',  // Ścieżka do pliku .glb w tym samym folderze
             function (gltf) {
                 scene.add(gltf.scene);
                 document.getElementById('loading').style.display = 'none';
