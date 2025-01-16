@@ -47,7 +47,7 @@
             document.getElementById('loading').style.display = 'none';
         }, undefined, function (error) {
             document.getElementById('loading').textContent = 'Error loading model!';
-            console.error('Błąd podczas ładowania modelu:', error);
+            console.error('Error loading model:', error);
         });
 
         camera.position.set(0, 1, 5);
