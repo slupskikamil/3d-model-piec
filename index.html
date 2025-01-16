@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>3D Model Viewer</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.158.0/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/js/loaders/GLTFLoader.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/js/controls/OrbitControls.js"></script>
     <style>
         body { margin: 0; overflow: hidden; }
         canvas { display: block; }
@@ -26,7 +23,12 @@
 </head>
 <body>
     <div id="loading">Loading model...</div>
-    <script>
+    <script type="module">
+        // Import Three.js i dodatków
+        import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.158.0/build/three.module.js';
+        import { GLTFLoader } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/loaders/GLTFLoader.js';
+        import { OrbitControls } from 'https://cdn.jsdelivr.net/npm/three@0.158.0/examples/jsm/controls/OrbitControls.js';
+
         // Tworzenie sceny, kamery i renderera
         const scene = new THREE.Scene();
         const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -43,8 +45,8 @@
         scene.add(ambientLight);
 
         // Ładowanie modelu 3D z pliku
-        const loader = new THREE.GLTFLoader();
-        loader.load('./model.glb', // Ścieżka do pliku modelu
+        const loader = new GLTFLoader();
+        loader.load('./model.glb',  // Ścieżka do pliku modelu
             function (gltf) {
                 scene.add(gltf.scene);
                 document.getElementById('loading').style.display = 'none';
@@ -58,7 +60,7 @@
 
         // Konfiguracja kamery i kontrolek
         camera.position.set(0, 1, 5);
-        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        const controls = new OrbitControls(camera, renderer.domElement);
         controls.enableDamping = true;
         controls.dampingFactor = 0.05;
         controls.enablePan = false;
