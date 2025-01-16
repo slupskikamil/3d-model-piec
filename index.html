@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Model Viewer</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.158.0/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.158.0/examples/js/controls/OrbitControls.js"></script>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        canvas { display: block; }
+        #loading { 
+            position: absolute; 
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            font-family: Arial, sans-serif; 
+            font-size: 16px; 
+            color: #555; 
+            background: rgba(255, 255, 255, 0.8); 
+            padding: 10px 20px; 
+            border-radius: 8px; 
+        }
+    </style>
+</head>
+<body>
+    <div id="loading">Loading model...</div>
+    <script>
+        // Podstawowe ustawienia Three.js
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        // Światło
+        const light = new THREE.DirectionalLight(0xffffff, 1);
+        light.position.set(5, 5, 5);
+        scene.add(light);
+
+        const ambientLight = new THREE.AmbientLight(0x404040);
+        scene.add(ambientLight);
+
+        // Ładowanie modelu GLB
+        const loader = new THREE.GLTFLoader();
+        let model;
+
+        loader.load(
+            './model.glb', // Zamień na odpowiednią ścieżkę do pliku
+            function (gltf) {
+                model = gltf.scene;
+                scene.add(model);
+                model.scale.set(1, 1, 1); // Skalowanie modelu
+                document.getElementById('loading').style.display = 'none';
+            },
+            undefined,
+            function (error) {
+                document.getElementById('loading').textContent = 'Error loading model!';
+                console.error('Błąd podczas ładowania modelu:', error);
+            }
+        );
+
+        // Ustawienie kamery i kontrolki orbitowania
+        camera.position.set(0, 1, 5); // Kamera początkowo ustawiona z przodu modelu
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true; // Płynniejsze ruchy
+        controls.dampingFactor = 0.05;
+        controls.enablePan = false; // Wyłączenie przesuwania
+        controls.minDistance = 2; // Minimalna odległość przybliżenia
+        controls.maxDistance = 10; // Maksymalna odległość oddalenia
+
+        // Automatyczny obrót modelu tylko wokół osi X
+        let lastInteractionTime = Date.now();
+        const AUTO_ROTATION_DELAY = 3000; // 3 sekundy
+        const AUTO_ROTATION_SPEED = 0.01;
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            const now = Date.now();
+            if (model && now - lastInteractionTime > AUTO_ROTATION_DELAY) {
+                model.rotation.x += AUTO_ROTATION_SPEED; // Automatyczny obrót wokół osi X
+            }
+
+            controls.update(); // Aktualizacja kontroli orbitowania
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Obsługa interakcji użytkownika
+        controls.addEventListener('start', () => {
+            lastInteractionTime = Date.now();
+        });
+
+        // Dostosowanie rozmiaru okna
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
